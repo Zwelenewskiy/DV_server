@@ -14,6 +14,6 @@ namespace DV_server
     {
 
         [OperationContract]
-        string GetEmails();
+        List<Email> GetEmails();
     }
 }

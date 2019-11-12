@@ -10,10 +10,9 @@ namespace DV_server
 {
     public class Server : IDV_server
     {
-        public string GetEmails()
+        public List<Email> GetEmails()
         {
-            //return DataBaseUtils.GetRecords();
-            return DataBaseUtils.ReadConnectSettings(DataBaseUtils.PATH);
+            return DataBaseUtils.GetRecords();
         }
     }
 }

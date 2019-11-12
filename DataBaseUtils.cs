@@ -8,8 +8,7 @@ namespace DV_server
 {
     public class DataBaseUtils
     {
-        //public static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\Debug\DBconnection.ini";
-        public static readonly string PATH = "DBconnection.ini";
+        private static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\Debug\DBconnection.ini";
 
         /// <summary>
         /// Возращает строку подключения к БД
