@@ -19,7 +19,7 @@ namespace DV_server
             string result = @"Data Source=<source>;Initial Catalog=<catalog>;Password=<password>;User ID=<login>;Integrated Security=True";
 
             result = result.Replace("<source>", INIfileUtils.ReadKey(path, "mssql", "server"));
-            result = result.Replace("<catalog>", INIfileUtils.ReadKey(path, "mssql", "catalog"));
+            result = result.Replace("<catalog>", INIfileUtils.ReadKey(path, "mssql", "database"));
 
            if(INIfileUtils.ReadKey(path, "mssql", "need_auth") == "1")
            {
