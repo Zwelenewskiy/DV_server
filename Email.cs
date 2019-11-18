@@ -10,9 +10,9 @@ namespace DV_server
     public class Email
     {
         public int id;
-        public string name;
+        public string from;
+        public string header;
         public string date;
         public string content;
-        public string FIO;
     }
 }

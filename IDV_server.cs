@@ -15,5 +15,8 @@ namespace DV_server
 
         [OperationContract]
         List<Email> GetEmails();
+
+        [OperationContract]
+        bool saveEmail(Email email);
     }
 }

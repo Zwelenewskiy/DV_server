@@ -8,7 +8,7 @@ namespace DV_server
 {
     public class DataBaseUtils
     {
-        private static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
+        public static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
 
         /// <summary>
         /// Возращает строку подключения к БД
@@ -16,7 +16,7 @@ namespace DV_server
         public static string ReadConnectSettings(string path)
         {
             //string result = @"Data Source=.\<source>;Initial Catalog=<catalog>;Integrated Security=True";
-            string result = @"Data Source=<source>;Initial Catalog=<catalog>;Password=<password>;User ID=<login>;Integrated Security=True";
+            string result = @"Data Source=<source>;Initial Catalog=<catalog>;Password=<password>;User ID=<login>";
 
             result = result.Replace("<source>", INIfileUtils.ReadKey(path, "mssql", "server"));
             result = result.Replace("<catalog>", INIfileUtils.ReadKey(path, "mssql", "database"));
@@ -38,9 +38,7 @@ namespace DV_server
             {
                 connection.Open();
 
-                var t = new SqlCommand("SELECT id, name, date, content, ФИО FROM DV_Test_server").ExecuteReader();
-
-                using(SqlDataReader reader = new SqlCommand("SELECT * FROM emails").ExecuteReader())
+                using(SqlDataReader reader = new SqlCommand("SELECT * FROM email", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
@@ -49,11 +47,12 @@ namespace DV_server
                             Email tmp_email = new Email()
                             {
                                 id = Convert.ToInt32(reader["id"]),
-                                name = reader["id"].ToString(),
-                                date = reader["id"].ToString(),
-                                content = reader["id"].ToString(),
-                                FIO = reader["id"].ToString(),
+                                header = reader["name"].ToString(),
+                                date = reader["date"].ToString(),
+                                content = reader["content"].ToString(),
                             };
+
+                            result.Add(tmp_email);
                         }                        
                     }
                 }
@@ -61,8 +60,7 @@ namespace DV_server
                 connection.Close();
             }
 
-
             return result;
-        }
+        }//ПЕРЕДЕЛАТЬ ЗАПРОС
     }
 }

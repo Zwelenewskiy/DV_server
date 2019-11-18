@@ -32,7 +32,7 @@ namespace DV_server
         {
             Configuration cfg = Configuration.LoadFromFile(path);
 
-            return cfg[section][key].ToString();
+            return cfg[section][key].StringValue;
         }
     }
 }

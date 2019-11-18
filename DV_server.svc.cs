@@ -14,5 +14,17 @@ namespace DV_server
         {
             return DataBaseUtils.GetRecords();
         }
+
+        public bool saveEmail(Email email)
+        {
+            try
+            {
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
+        }
     }
 }
