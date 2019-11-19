@@ -15,15 +15,9 @@ namespace DV_server
             return DataBaseUtils.GetRecords();
         }
 
-        public List<User> GetUsers()
+        public Users GetUsers()
         {
-            return new List<User>() { new User() {
-                name = "asdasdasd",
-                patronymic = "TTTTTTT",
-                lastname = "3333",
-                email = "sxdgfdrsgf@yy.yy",
-                id = 0
-            } };
+            return DataBaseUtils.GetUsers();
         }
 
         public bool saveEmail(Email email)

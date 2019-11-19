@@ -7,9 +7,9 @@ using System.Web;
 namespace DV_server
 {
     [DataContract]
-    public class User
+    public class Users
     {
-        [DataMember]
+        /*[DataMember]
         public int id;
         [DataMember]
         public string name;
@@ -18,6 +18,12 @@ namespace DV_server
         [DataMember]
         public string lastname;
         [DataMember]
-        public string email;
+        public string email;*/
+
+        [DataMember]
+        public List<int> IDs;
+
+        [DataMember]
+        public List<string> data;
     }
 }

@@ -19,6 +19,6 @@ namespace DV_server
         bool saveEmail(Email email);
 
         [OperationContract]
-        List<User> GetUsers();
+        Users GetUsers();
     }
 }

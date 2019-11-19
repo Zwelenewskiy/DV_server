@@ -8,7 +8,7 @@ namespace DV_server
 {
     public class DataBaseUtils
     {
-        public static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
+        private static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
 
         /// <summary>
         /// Возращает строку подключения к БД
@@ -57,6 +57,35 @@ namespace DV_server
             return result;
         }//ПЕРЕДЕЛАТЬ ЗАПРОС
 
-        //public static List<User>
+        public static Users GetUsers()
+        {
+            List<int> tmp_IDs = new List<int>();
+            List<string> tmp_data = new List<string>();
+
+            using (SqlConnection connection = new SqlConnection(ReadConnectSettings(PATH)))
+            {
+                connection.Open();
+
+                using (SqlDataReader reader = new SqlCommand("SELECT ID, name, patronymic, lastname, email FROM [user]", connection).ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            tmp_IDs.Add(Convert.ToInt32(reader["ID"]));
+                            tmp_data.Add(reader["lastname"].ToString() + " " + reader["name"].ToString() + " " + reader["patronymic"].ToString() + " " + reader["email"].ToString());
+                        }
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return new Users()
+            {
+                IDs = tmp_IDs,
+                data = tmp_data
+            };
+        }
     }
 }
