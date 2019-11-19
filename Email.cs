@@ -14,5 +14,9 @@ namespace DV_server
         public string header;
         public string date;
         public string content;
+        public List<string> to;
+        public List<string> copy;
+        public List<string> hidden_copy;
+        public List<string> tags;
     }
 }
