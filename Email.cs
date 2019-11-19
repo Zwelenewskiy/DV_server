@@ -12,7 +12,7 @@ namespace DV_server
         [DataMember]
         public int id;
         [DataMember]
-        public string from;
+        public int from;
         [DataMember]
         public string header;
         [DataMember]

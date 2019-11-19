@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -86,6 +87,43 @@ namespace DV_server
                 IDs = tmp_IDs,
                 data = tmp_data
             };
+        }
+
+        public static bool SaveEmail(Email email)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ReadConnectSettings(PATH)))
+                {
+                    connection.Open();
+
+                    int ID = Convert.ToInt32(new SqlCommand($"INSERT INTO [dbo].[email] ([from] ,[date] ,[content] ,[name]) VALUES('{email.from}', " +
+                        $"{email.date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}, '{email.content}', '{email.header}'); SELECT SCOPE_IDENTITY()", connection).ExecuteScalar());
+
+                    foreach(int user_id in email.to)
+                    {
+                        new SqlCommand($"INSERT INTO[dbo].[to]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
+                    }
+
+                    foreach (int user_id in email.copy)
+                    {
+                        new SqlCommand($"INSERT INTO[dbo].[copy]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
+                    }
+
+                    foreach (int user_id in email.hidden_copy)
+                    {
+                        new SqlCommand($"INSERT INTO[dbo].[hidden_copy]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
+                    }
+
+                    connection.Close();
+                }
+
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
         }
     }
 }

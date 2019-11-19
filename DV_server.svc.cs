@@ -22,14 +22,7 @@ namespace DV_server
 
         public bool saveEmail(Email email)
         {
-            try
-            {
-                return true;
-            }
-            catch 
-            {
-                return false;
-            }
+            return DataBaseUtils.SaveEmail(email);
         }
     }
 }
