@@ -44,15 +44,9 @@ namespace DV_server
                     {
                         while (reader.Read())
                         {
-                            Email tmp_email = new Email()
-                            {
-                                id = Convert.ToInt32(reader["id"]),
-                                header = reader["name"].ToString(),
-                                date = reader["date"].ToString(),
-                                content = reader["content"].ToString(),
-                            };
+                            //new Email
 
-                            result.Add(tmp_email);
+                            //result.Add(tmp_email);
                         }                        
                     }
                 }
