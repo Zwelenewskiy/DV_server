@@ -20,12 +20,12 @@ namespace DV_server
         [DataMember]
         public string content;
         [DataMember]
-        public List<string> to;
+        public List<int> to;
         [DataMember]
-        public List<string> copy;
+        public List<int> copy;
         [DataMember]
-        public List<string> hidden_copy;
+        public List<int> hidden_copy;
         [DataMember]
-        public List<string> tags;
+        public List<int> tags;
     }
 }

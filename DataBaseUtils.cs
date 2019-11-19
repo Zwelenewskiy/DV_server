@@ -56,5 +56,7 @@ namespace DV_server
 
             return result;
         }//ПЕРЕДЕЛАТЬ ЗАПРОС
+
+        //public static List<User>
     }
 }

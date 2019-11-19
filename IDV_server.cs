@@ -12,11 +12,13 @@ namespace DV_server
     [ServiceContract]
     public interface IDV_server
     {
-
         [OperationContract]
         List<Email> GetEmails();
 
         [OperationContract]
         bool saveEmail(Email email);
+
+        [OperationContract]
+        List<User> GetUsers();
     }
 }
