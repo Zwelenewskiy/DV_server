@@ -78,6 +78,7 @@
       <DependentUpon>DV_server.svc</DependentUpon>
     </Compile>
     <Compile Include="Email.cs" />
+    <Compile Include="GlobalSettings.cs" />
     <Compile Include="IDV_server.cs" />
     <Compile Include="INIfileUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

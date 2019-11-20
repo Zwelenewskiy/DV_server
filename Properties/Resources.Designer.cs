@@ -59,5 +59,14 @@ namespace DV_server.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string asf {
+            get {
+                return ResourceManager.GetString("asf", resourceCulture);
+            }
+        }
     }
 }

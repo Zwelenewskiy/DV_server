@@ -10,7 +10,7 @@ namespace DV_server
 {
     public class DataBaseUtils
     {
-        private static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
+        //private static readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
 
         /// <summary>
         /// Возращает строку подключения к БД
@@ -36,7 +36,7 @@ namespace DV_server
         {
             List<Email> result = new List<Email>();
 
-            using (SqlConnection connection = new SqlConnection(ReadConnectSettings(PATH)))
+            using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
                 connection.Open();
 
@@ -63,7 +63,7 @@ namespace DV_server
         {
             List<User> result = new List<User>();
 
-            using (SqlConnection connection = new SqlConnection(ReadConnectSettings(PATH)))
+            using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
                 connection.Open();
 
@@ -95,7 +95,7 @@ namespace DV_server
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ReadConnectSettings(PATH)))
+                using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
 

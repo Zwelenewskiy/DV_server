@@ -11,6 +11,13 @@ namespace DV_server
 {
     public class Server : IDV_server
     {
+        private readonly string PATH = @"C:\Users\Pertenava.A\Основное задание\Сервер\DV_server\bin\DBconnection.ini";
+
+        public Server()
+        {
+            GlobalSettings.connection_string = DataBaseUtils.ReadConnectSettings(PATH);            
+        }
+
         public List<Email> GetEmails()
         {
             return DataBaseUtils.GetRecords();
@@ -18,7 +25,6 @@ namespace DV_server
 
         public List<User> GetUsers()
         {
-            //return DataBaseUtils.GetUsers();
             return DataBaseUtils.GetUsers();
         }
 
