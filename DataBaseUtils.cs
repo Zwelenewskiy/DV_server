@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -58,10 +59,9 @@ namespace DV_server
             return result;
         }//ПЕРЕДЕЛАТЬ ЗАПРОС
 
-        public static Users GetUsers()
+        public static List<User> GetUsers()
         {
-            List<int> tmp_IDs = new List<int>();
-            List<string> tmp_data = new List<string>();
+            List<User> result = new List<User>();
 
             using (SqlConnection connection = new SqlConnection(ReadConnectSettings(PATH)))
             {
@@ -73,8 +73,14 @@ namespace DV_server
                     {
                         while (reader.Read())
                         {
-                            tmp_IDs.Add(Convert.ToInt32(reader["ID"]));
-                            tmp_data.Add(reader["lastname"].ToString() + " " + reader["name"].ToString() + " " + reader["patronymic"].ToString() + " " + reader["email"].ToString());
+                            result.Add(new User()
+                            {
+                                id = Convert.ToInt32(reader["ID"]),
+                                lastname = reader["lastname"].ToString(),
+                                name = reader["name"].ToString(),
+                                patronymic = reader["patronymic"].ToString(),
+                                email = reader["email"].ToString()                                
+                            });
                         }
                     }
                 }
@@ -82,11 +88,7 @@ namespace DV_server
                 connection.Close();
             }
 
-            return new Users()
-            {
-                IDs = tmp_IDs,
-                data = tmp_data
-            };
+            return result;
         }
 
         public static bool SaveEmail(Email email)

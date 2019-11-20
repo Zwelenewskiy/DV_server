@@ -19,7 +19,7 @@ namespace DV_server
         public List<User> GetUsers()
         {
             //return DataBaseUtils.GetUsers();
-            return new List<User>();
+            return DataBaseUtils.GetUsers();
         }
 
         public bool saveEmail(Email email)
