@@ -99,27 +99,30 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    int ID = Convert.ToInt32(new SqlCommand($"INSERT INTO [dbo].[email] ([from] ,[date] ,[content] ,[name]) VALUES('{email.from}', " +
-                        $"'{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}', '{email.content}', '{email.header}'); SELECT SCOPE_IDENTITY()", connection).ExecuteScalar());
+                    /*int ID = Convert.ToInt32(new SqlCommand($"INSERT INTO [dbo].[email] ([from] ,[date] ,[content] ,[name]) VALUES('{email.from}', " +
+                        $"'{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}', '{email.content}', '{email.header}'); SELECT SCOPE_IDENTITY()", connection).ExecuteScalar());*/
 
-                    foreach(int user_id in email.to)
+                    int ID = Convert.ToInt32(new SqlCommand($"EXEC Add_in_email {email.from}, " +
+                        $"'{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}', '{email.content}', '{email.header}'", connection).ExecuteScalar());
+
+                    foreach (int user_id in email.to)
                     {
-                        new SqlCommand($"INSERT INTO[dbo].[to]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
+                        new SqlCommand($"EXEC Add_in_to {ID}, {user_id}", connection).ExecuteNonQuery();
                     }
 
                     foreach (int user_id in email.copy)
                     {
-                        new SqlCommand($"INSERT INTO[dbo].[copy]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
+                        new SqlCommand($"EXEC Add_in_copy {ID}, {user_id}", connection).ExecuteNonQuery();
                     }
 
                     foreach (int user_id in email.hidden_copy)
                     {
-                        new SqlCommand($"INSERT INTO[dbo].[hidden_copy]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
+                        new SqlCommand($"EXEC Add_in_hidden_copy {ID}, {user_id}", connection).ExecuteNonQuery();
                     }
 
                     foreach (string tag_name in email.tags)
                     {
-                        new SqlCommand($"INSERT INTO[dbo].[tag]([email_id],[name]) VALUES({ID}, {tag_name})", connection).ExecuteNonQuery();
+                        new SqlCommand($"EXEC Add_in_tag {ID}, '{tag_name}'", connection).ExecuteNonQuery();
                     }
 
                     connection.Close();
