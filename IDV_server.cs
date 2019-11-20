@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using Models;
 
 namespace DV_server
 {
@@ -19,6 +20,6 @@ namespace DV_server
         bool saveEmail(Email email);
 
         [OperationContract]
-        Users GetUsers();
+        List<User> GetUsers();
     }
 }

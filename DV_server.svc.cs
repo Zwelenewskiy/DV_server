@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using Models;
 
 namespace DV_server
 {
@@ -15,9 +16,10 @@ namespace DV_server
             return DataBaseUtils.GetRecords();
         }
 
-        public Users GetUsers()
+        public List<User> GetUsers()
         {
-            return DataBaseUtils.GetUsers();
+            //return DataBaseUtils.GetUsers();
+            return new List<User>();
         }
 
         public bool saveEmail(Email email)
