@@ -99,9 +99,6 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    /*int ID = Convert.ToInt32(new SqlCommand($"INSERT INTO [dbo].[email] ([from] ,[date] ,[content] ,[name]) VALUES('{email.from}', " +
-                        $"'{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}', '{email.content}', '{email.header}'); SELECT SCOPE_IDENTITY()", connection).ExecuteScalar());*/
-
                     int ID = Convert.ToInt32(new SqlCommand($"EXEC Add_in_email {email.from}, " +
                         $"'{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}', '{email.content}', '{email.header}'", connection).ExecuteScalar());
 
