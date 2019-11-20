@@ -26,6 +26,6 @@ namespace DV_server
         [DataMember]
         public List<int> hidden_copy;
         [DataMember]
-        public List<int> tags;
+        public List<string> tags;
     }
 }

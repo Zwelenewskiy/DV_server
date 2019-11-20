@@ -115,6 +115,11 @@ namespace DV_server
                         new SqlCommand($"INSERT INTO[dbo].[hidden_copy]([email_id],[user_id]) VALUES({ID}, {user_id})", connection).ExecuteNonQuery();
                     }
 
+                    foreach (string tag_name in email.tags)
+                    {
+                        new SqlCommand($"INSERT INTO[dbo].[tag]([email_id],[name]) VALUES({ID}, {tag_name})", connection).ExecuteNonQuery();
+                    }
+
                     connection.Close();
                 }
 
