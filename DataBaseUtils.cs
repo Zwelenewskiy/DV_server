@@ -198,6 +198,13 @@ namespace DV_server
                                 new_hidden_copy.Add(t[1]);
                             }
 
+                            var tmp_tags = new List<Tag>(tags.Where(x => x.email_id == Convert.ToInt32(reader["id"])));
+                            List<string> new_tags = new List<string>();
+                            foreach (Tag tag in tmp_tags)
+                            {
+                                new_tags.Add(tag.name);
+                            }
+
                             result.Add(new Email()
                             {
                                 id = Convert.ToInt32(reader["id"]),
@@ -208,7 +215,7 @@ namespace DV_server
                                 to = new_to,
                                 copy = new_copy,
                                 hidden_copy = new_hidden_copy,
-                                
+                                tags = new_tags
                             });
                         }
                     }
