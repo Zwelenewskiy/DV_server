@@ -75,7 +75,7 @@ namespace DV_server
             List<int[]> copy = new List<int[]>();
             List<int[]> hidden_copy = new List<int[]>();
             List<User> users = new List<User>();
-            Dictionary<int, string> tags = new Dictionary<int, string>();
+            List<Tag> tags = new List<Tag>();
 
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
@@ -155,16 +155,20 @@ namespace DV_server
                 }
 
                 //получили tags
-                /*using (SqlDataReader reader = new SqlCommand("SELECT email_id, name FROM tag", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("SELECT email_id, name FROM tag", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            tags.Add(Convert.ToInt32(reader["email_id"]), reader["name"].ToString());
+                            tags.Add(new Tag()
+                            {
+                                email_id = Convert.ToInt32(reader["email_id"]),
+                                name = reader["name"].ToString()
+                            });
                         }
                     }
-                }*/
+                }
 
                 //получили email'ы
                 using (SqlDataReader reader = new SqlCommand("SELECT [id], name, [date], [from], content FROM email", connection).ExecuteReader())
@@ -203,7 +207,8 @@ namespace DV_server
                                 content = reader["content"].ToString(),
                                 to = new_to,
                                 copy = new_copy,
-                                hidden_copy = new_hidden_copy
+                                hidden_copy = new_hidden_copy,
+                                
                             });
                         }
                     }
