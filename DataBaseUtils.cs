@@ -46,9 +46,7 @@ namespace DV_server
                     {
                         while (reader.Read())
                         {
-                            //new Email
 
-                            //result.Add(tmp_email);
                         }                        
                     }
                 }
