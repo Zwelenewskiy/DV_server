@@ -75,14 +75,12 @@ namespace DV_server
             List<KeyValuePair<int, int>> copy = new List<KeyValuePair<int, int>>();
             List<KeyValuePair<int, int>> hidden_copy = new List<KeyValuePair<int, int>>();
             List<KeyValuePair<int, int>> email_tag = new List<KeyValuePair<int, int>>();
-            List<User> users = new List<User>();
+            List<User> users = GetUsers();
             List<KeyValuePair<int, string>> tags = new List<KeyValuePair<int, string>>();
 
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
                 connection.Open();
-
-                users = GetUsers();
 
                 //получили To
                 using (SqlDataReader reader = new SqlCommand("EXEC GetTo", connection).ExecuteReader())
