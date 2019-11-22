@@ -16,6 +16,6 @@ namespace Models
         public List<int> to;
         public List<int> copy;
         public List<int> hidden_copy;
-        public List<string> tags;
+        public List<KeyValuePair<int, string>> tags;
     }
 }

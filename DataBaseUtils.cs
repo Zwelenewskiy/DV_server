@@ -80,7 +80,9 @@ namespace DV_server
 
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
-                connection.Open();                
+                connection.Open();
+
+                users = GetUsers();
 
                 //получили To
                 using (SqlDataReader reader = new SqlCommand("EXEC GetTo", connection).ExecuteReader())
@@ -114,25 +116,6 @@ namespace DV_server
                         while (reader.Read())
                         {
                             hidden_copy.Add(new KeyValuePair<int, int>(Convert.ToInt32(reader["email_id"]), Convert.ToInt32(reader["user_id"])));
-                        }
-                    }
-                }
-
-                //получили user
-                using (SqlDataReader reader = new SqlCommand("EXEC GetUsers", connection).ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            users.Add(new User()
-                            {
-                                id = Convert.ToInt32(reader["id"]),
-                                lastname = reader["lastname"].ToString(),
-                                name = reader["name"].ToString(),
-                                patronymic = reader["patronymic"].ToString(),
-                                email = reader["email"].ToString(),
-                            });
                         }
                     }
                 }
@@ -180,10 +163,10 @@ namespace DV_server
                             List<int> new_hidden_copy = new List<int>(hidden_copy.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
                             var tmp_email_tag = new List<KeyValuePair<int, int>>(email_tag.Where(x => x.Key == current_email_id));
-                            List<string> new_tags = new List<string>(tags.Join(tmp_email_tag, 
+                            List<KeyValuePair<int, string>> new_tags = new List<KeyValuePair<int, string>>(tags.Join(tmp_email_tag, 
                                                                     tag_id => tag_id.Key,
                                                                     em_tag => em_tag.Value,
-                                                                    (tag_id, em_tag) => new KeyValuePair<int, string>(em_tag.Value, tag_id.Value)).Select(x => x.Value));
+                                                                    (tag_id, em_tag) => new KeyValuePair<int, string>(em_tag.Value, tag_id.Value)));
 
                             result.Add(new Email()
                             {
@@ -215,7 +198,7 @@ namespace DV_server
             {
                 connection.Open();
 
-                using (SqlDataReader reader = new SqlCommand("SELECT ID, name, patronymic, lastname, email FROM [user]", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetUsers", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
@@ -265,10 +248,10 @@ namespace DV_server
                         new SqlCommand($"EXEC Add_in_hidden_copy {ID}, {user_id}", connection).ExecuteNonQuery();
                     }
 
-                    foreach (string tag_name in email.tags)
+                    /*foreach (string tag_name in email.tags)
                     {
                         new SqlCommand($"EXEC Add_in_tag {ID}, '{tag_name}'", connection).ExecuteNonQuery();
-                    }
+                    }*/
 
                     connection.Close();
                 }
@@ -287,6 +270,8 @@ namespace DV_server
 
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
+                connection.Open();
+
                 using (SqlDataReader reader = new SqlCommand("EXEC GetTags", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -297,6 +282,8 @@ namespace DV_server
                         }
                     }
                 }
+
+                connection.Close();
             }
 
             return result;
