@@ -248,10 +248,10 @@ namespace DV_server
                         new SqlCommand($"EXEC Add_in_hidden_copy {ID}, {user_id}", connection).ExecuteNonQuery();
                     }
 
-                    /*foreach (string tag_name in email.tags)
+                    foreach (var tag_name in email.tags)
                     {
-                        new SqlCommand($"EXEC Add_in_tag {ID}, '{tag_name}'", connection).ExecuteNonQuery();
-                    }*/
+                        new SqlCommand($"EXEC SaveEmailTag {tag_name.Key}, '{ID}'", connection).ExecuteNonQuery();
+                    }
 
                     connection.Close();
                 }
