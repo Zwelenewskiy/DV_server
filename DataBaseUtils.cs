@@ -180,7 +180,6 @@ namespace DV_server
                             List<int> new_hidden_copy = new List<int>(hidden_copy.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
                             var tmp_email_tag = new List<KeyValuePair<int, int>>(email_tag.Where(x => x.Key == current_email_id));
-
                             List<string> new_tags = new List<string>(tags.Join(tmp_email_tag, 
                                                                     tag_id => tag_id.Key,
                                                                     em_tag => em_tag.Value,
@@ -280,6 +279,27 @@ namespace DV_server
             {
                 return false;
             }
+        }
+
+        public static List<KeyValuePair<int, string>> GetTags()
+        {
+            List<KeyValuePair<int, string>> result = new List<KeyValuePair<int, string>>();
+
+            using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
+            {
+                using (SqlDataReader reader = new SqlCommand("EXEC GetTags", connection).ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            result.Add(new KeyValuePair<int, string>(Convert.ToInt32(reader["id"]), reader["name"].ToString()));
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

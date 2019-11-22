@@ -21,5 +21,8 @@ namespace DV_server
 
         [OperationContract]
         List<User> GetUsers();
+
+        [OperationContract]
+        List<KeyValuePair<int, string>> GetTags();
     }
 }
