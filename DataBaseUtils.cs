@@ -71,72 +71,55 @@ namespace DV_server
         public static List<Email> GetRecords()
         {
             List<Email> result = new List<Email>();
-            List<int[]> to = new List<int[]>();
-            List<int[]> copy = new List<int[]>();
-            List<int[]> hidden_copy = new List<int[]>();
+            List<KeyValuePair<int, int>> to = new List<KeyValuePair<int, int>>();
+            List<KeyValuePair<int, int>> copy = new List<KeyValuePair<int, int>>();
+            List<KeyValuePair<int, int>> hidden_copy = new List<KeyValuePair<int, int>>();
+            List<KeyValuePair<int, int>> email_tag = new List<KeyValuePair<int, int>>();
             List<User> users = new List<User>();
-            List<Tag> tags = new List<Tag>();
+            List<KeyValuePair<int, string>> tags = new List<KeyValuePair<int, string>>();
 
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
-                connection.Open();
-                  
+                connection.Open();                
+
                 //получили To
-                using (SqlDataReader reader = new SqlCommand("SELECT email_id, user_id FROM [to]", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetTo", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {              
                         while (reader.Read())
                         {
-                            int[] tmp = new int[2];
-
-                            tmp[0] = Convert.ToInt32(reader["email_id"]);
-                            tmp[1] = Convert.ToInt32(reader["user_id"]);
-
-                            to.Add(tmp);
-                            tmp = new int[2];
+                            to.Add(new KeyValuePair<int, int>(Convert.ToInt32(reader["email_id"]), Convert.ToInt32(reader["user_id"])));
                         }
                     }
                 }
 
                 //получили copy
-                using (SqlDataReader reader = new SqlCommand("SELECT email_id, user_id FROM copy", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetCopy", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            int[] tmp = new int[2];
-
-                            tmp[0] = Convert.ToInt32(reader["email_id"]);
-                            tmp[1] = Convert.ToInt32(reader["user_id"]);
-
-                            copy.Add(tmp);
-                            tmp = new int[2];
+                            copy.Add(new KeyValuePair<int, int>(Convert.ToInt32(reader["email_id"]), Convert.ToInt32(reader["user_id"])));
                         }
                     }
                 }
 
                 //получили hidden_copy
-                using (SqlDataReader reader = new SqlCommand("SELECT email_id, user_id FROM hidden_copy", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetHiddenCopy", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            int[] tmp = new int[2];
-
-                            tmp[0] = Convert.ToInt32(reader["email_id"]);
-                            tmp[1] = Convert.ToInt32(reader["user_id"]);
-
-                            hidden_copy.Add(tmp);
-                            tmp = new int[2];
+                            hidden_copy.Add(new KeyValuePair<int, int>(Convert.ToInt32(reader["email_id"]), Convert.ToInt32(reader["user_id"])));
                         }
                     }
                 }
 
                 //получили user
-                using (SqlDataReader reader = new SqlCommand("SELECT id, lastname, name, patronymic, email FROM [user]", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetUsers", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
@@ -155,55 +138,48 @@ namespace DV_server
                 }
 
                 //получили tags
-                using (SqlDataReader reader = new SqlCommand("SELECT email_id, name FROM tag", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetTags", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            tags.Add(new Tag()
-                            {
-                                email_id = Convert.ToInt32(reader["email_id"]),
-                                name = reader["name"].ToString()
-                            });
+                            tags.Add(new KeyValuePair<int, string>(Convert.ToInt32(reader["id"]), reader["name"].ToString()));
+                        }
+                    }
+                }
+
+                //получили EmailTag
+                using (SqlDataReader reader = new SqlCommand("EXEC GetEmailTag", connection).ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            email_tag.Add(new KeyValuePair<int, int>(Convert.ToInt32(reader["email_id"]), Convert.ToInt32(reader["tag_id"])));
                         }
                     }
                 }
 
                 //получили email'ы
-                using (SqlDataReader reader = new SqlCommand("SELECT [id], name, [date], [from], content FROM email", connection).ExecuteReader())
+                using (SqlDataReader reader = new SqlCommand("EXEC GetEmails", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            var tmp_to = new List<int[]>(to.Where(x => x[0] == Convert.ToInt32(reader["id"])));
-                            List<int> new_to = new List<int>();
-                            foreach(int[] t in tmp_to)
-                            {
-                                new_to.Add(t[1]);
-                            }
+                            int current_email_id = Convert.ToInt32(reader["id"]);
 
-                            var tmp_copy = new List<int[]>(copy.Where(x => x[0] == Convert.ToInt32(reader["id"])));
-                            List<int> new_copy = new List<int>();
-                            foreach (int[] t in tmp_copy)
-                            {
-                                new_copy.Add(t[1]);
-                            }
+                            var tmp_to = new List<KeyValuePair<int, int>> (to.Where(x => x.Key == current_email_id));
+                            List<int> new_to = new List<int>(to.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
-                            var tmp_hidden_copy = new List<int[]>(hidden_copy.Where(x => x[0] == Convert.ToInt32(reader["id"])));
-                            List<int> new_hidden_copy = new List<int>();
-                            foreach (int[] t in tmp_hidden_copy)
-                            {
-                                new_hidden_copy.Add(t[1]);
-                            }
+                            var tmp_copy = new List<KeyValuePair<int, int>>(copy.Where(x => x.Key == current_email_id));
+                            List<int> new_copy = new List<int>(copy.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
-                            var tmp_tags = new List<Tag>(tags.Where(x => x.email_id == Convert.ToInt32(reader["id"])));
-                            List<string> new_tags = new List<string>();
-                            foreach (Tag tag in tmp_tags)
-                            {
-                                new_tags.Add(tag.name);
-                            }
+                            var tmp_hidden_copy = new List<KeyValuePair<int, int>>(hidden_copy.Where(x => x.Key == current_email_id));
+                            List<int> new_hidden_copy = new List<int>(hidden_copy.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
+
+                            List<string> new_tags = new List<string>(tags.Zip(email_tag, (tag, em_tag) => new KeyValuePair<int, string>(em_tag.Value, tag.Value)).Select(x => x.Value).ToList());
 
                             result.Add(new Email()
                             {
