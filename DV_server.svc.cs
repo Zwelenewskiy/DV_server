@@ -37,5 +37,10 @@ namespace DV_server
         {
             return DataBaseUtils.GetTags();
         }
+
+        public bool ChangeEmail(Email email)
+        {
+            return DataBaseUtils.UpdateEmail(email);
+        }
     }
 }

@@ -24,5 +24,8 @@ namespace DV_server
 
         [OperationContract]
         List<KeyValuePair<int, string>> GetTags();
+
+        [OperationContract]
+        bool ChangeEmail(Email email);
     }
 }

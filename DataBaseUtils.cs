@@ -3,8 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Xml.Serialization;
 
 namespace DV_server
 {
@@ -14,6 +17,15 @@ namespace DV_server
         {
             withReader,
             nonQuery
+        }
+
+        private static string ToXMLString(object obj, Type objType)
+        {
+            XmlSerializer xs = new XmlSerializer(objType);
+            MemoryStream ms = new MemoryStream();
+            xs.Serialize(ms, obj);
+
+            return Encoding.UTF8.GetString(ms.ToArray());
         }
 
         /*private static T DoQuery<T>(string query, QueryParams query_param, T t)
@@ -48,9 +60,6 @@ namespace DV_server
             return t;
         }*/
 
-        /// <summary>
-        /// Возращает строку подключения к БД
-        /// </summary>
         public static string ReadConnectSettings(string path)
         {
             //string result = @"Data Source=.\<source>;Initial Catalog=<catalog>;Integrated Security=True";
@@ -151,13 +160,10 @@ namespace DV_server
                         {
                             int current_email_id = Convert.ToInt32(reader["id"]);
 
-                            var tmp_to = new List<KeyValuePair<int, int>> (to.Where(x => x.Key == current_email_id));
                             List<int> new_to = new List<int>(to.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
-                            var tmp_copy = new List<KeyValuePair<int, int>>(copy.Where(x => x.Key == current_email_id));
                             List<int> new_copy = new List<int>(copy.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
-                            var tmp_hidden_copy = new List<KeyValuePair<int, int>>(hidden_copy.Where(x => x.Key == current_email_id));
                             List<int> new_hidden_copy = new List<int>(hidden_copy.Where(x => x.Key == current_email_id).Select(x => x.Value).ToList());
 
                             var tmp_email_tag = new List<KeyValuePair<int, int>>(email_tag.Where(x => x.Key == current_email_id));
@@ -269,7 +275,7 @@ namespace DV_server
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
                 connection.Open();
-
+                
                 using (SqlDataReader reader = new SqlCommand("EXEC GetTags", connection).ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -285,6 +291,28 @@ namespace DV_server
             }
 
             return result;
+        }
+         
+        public static bool UpdateEmail(Email email)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
+                {
+                    connection.Open();
+
+                    new SqlCommand($"EXEC UpdateEmail {email.id} {email.from}  {email.date}  {email.content}  {email.header}  " +
+                        $"{ToXMLString(email.to, typeof(List<int>))}  {ToXMLString(email.copy, typeof(List<int>))}  " +
+                        $"{ToXMLString(email.hidden_copy, typeof(List<int>))}   {ToXMLString(email.tags, typeof(List<KeyValuePair<int, string>>))}", connection);
+                    connection.Close();
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
