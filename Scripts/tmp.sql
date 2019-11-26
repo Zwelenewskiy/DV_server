@@ -19,7 +19,7 @@ begin
 	CREATE TABLE #to_for_insert_tmp ([email_id] int, [user_id] int)
 	
 	SELECT @ID as email_id, tmp.n.value('int[1]', 'int') as user_id
-	INTO v
+	INTO to_for_insert_tmp
 	FROM @to.nodes('/ArrayOfInt') tmp(n)
 		
 	UPDATE [to]

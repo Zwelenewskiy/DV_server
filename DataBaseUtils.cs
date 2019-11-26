@@ -302,7 +302,7 @@ namespace DV_server
                     connection.Open();
 
                     new SqlCommand($"EXEC UpdateEmail {email.id} {email.from}  {email.date}  {email.content}  {email.header}  " +
-                        $"{ToXMLString(email.to, typeof(List<int>))} ", connection).ExecuteNonQuery();
+                        $"'{ToXMLString(email.to, typeof(List<int>))}' ", connection).ExecuteNonQuery();
 
                     connection.Close();
                     return true;
