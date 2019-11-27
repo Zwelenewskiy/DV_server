@@ -27,5 +27,8 @@ namespace DV_server
 
         [OperationContract]
         bool ChangeEmail(Email email);
+
+        [OperationContract]
+        List<Email> SearchByDate(DateTime from, DateTime to);
     }
 }

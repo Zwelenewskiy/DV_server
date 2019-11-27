@@ -28,6 +28,11 @@ namespace DV_server
             return Encoding.UTF8.GetString(ms.ToArray());
         }
 
+        private string ConvertDateForDB(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
         /*private static T DoQuery<T>(string query, QueryParams query_param, T t)
         {
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
@@ -315,6 +320,11 @@ namespace DV_server
             {
                 return false;
             }            
+        }
+
+        public static List<Email> SearchByDate(DateTime from, DateTime to)
+        {
+            return new List<Email>();
         }
     }
 }

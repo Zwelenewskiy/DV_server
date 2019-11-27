@@ -41,6 +41,12 @@ namespace DV_server
         public bool ChangeEmail(Email email)
         {
             return DataBaseUtils.UpdateEmail(email);
+
+        }
+
+        public List<Email> SearchByDate(DateTime from, DateTime to)
+        {
+            return DataBaseUtils.SearchByDate(from, to);
         }
     }
 }
