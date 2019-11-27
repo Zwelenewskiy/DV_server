@@ -301,8 +301,11 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    new SqlCommand($"EXEC UpdateEmail {email.id} {email.from}  {email.date}  {email.content}  {email.header}  " +
-                        $"'{ToXMLString(email.to, typeof(List<int>))}' ", connection).ExecuteNonQuery();
+                    new SqlCommand($"EXEC UpdateEmail {email.id}, {email.from}, '{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}',  '{email.content}',  '{email.header}',  " +
+                        $"'{ToXMLString(email.to, typeof(List<int>))}', " +
+                        $"'{ToXMLString(email.copy, typeof(List<int>))}', " +
+                        $"'{ToXMLString(email.hidden_copy, typeof(List<int>))}', " +
+                        $"'{ToXMLString(email.tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteNonQuery();
 
                     connection.Close();
                     return true;
