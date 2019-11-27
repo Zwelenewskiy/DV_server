@@ -28,6 +28,15 @@ namespace DV_server
             return Encoding.UTF8.GetString(ms.ToArray());
         }
 
+        private T FromXMLString<T>(string xml_string)
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            using (var stringReader = new StringReader(xml_string))
+            {
+                return (T)serializer.Deserialize(stringReader);
+            }
+        }
+
         private string ConvertDateForDB(DateTime dateTime)
         {
             return dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
