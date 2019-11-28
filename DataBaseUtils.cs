@@ -382,5 +382,12 @@ namespace DV_server
                 return null;
             }
         }
+
+        public static List<Email> SearchByTags(List<KeyValuePair<int, string>> tags)
+        {
+
+
+            return new List<Email>();
+        }
     }
 }

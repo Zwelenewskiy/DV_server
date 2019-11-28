@@ -48,5 +48,10 @@ namespace DV_server
         {
             return DataBaseUtils.SearchByDate(from, to);
         }
+
+        public List<Email> SearchByTags(List<KeyValuePair<int, string>> tags)
+        {
+            return DataBaseUtils.SearchByTags(tags);
+        }
     }
 }

@@ -30,5 +30,8 @@ namespace DV_server
 
         [OperationContract]
         List<Email> SearchByDate(DateTime from, DateTime to);
+
+        [OperationContract]
+        List<Email> SearchByTags(List<KeyValuePair<int, string>> tags);
     }
 }

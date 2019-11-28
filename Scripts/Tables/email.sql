@@ -1,0 +1,11 @@
+CREATE TABLE [dbo].[email](
+	[ID] [int] IDENTITY(0,1) NOT NULL,
+	[from] [int] NOT NULL,
+	[date] [datetime] NOT NULL,
+	[content] [nvarchar](300) NOT NULL,
+	[name] [nvarchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
