@@ -31,7 +31,7 @@ BEGIN
             [user_id] AS 'int'
         FROM 
             [to] 
-        WHERE em.ID IN (SELECT ID FROM #tmp_email_id ) AND em.ID = [to].email_id 
+		WHERE em.ID = [to].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) a([new_to])
@@ -41,7 +41,7 @@ BEGIN
             [user_id] AS 'int'
         FROM 
             [copy] 
-        WHERE em.ID IN (SELECT ID FROM #tmp_email_id ) AND em.ID = [copy].email_id 
+		WHERE em.ID = [copy].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) b([new_copy])
@@ -51,7 +51,7 @@ BEGIN
             [user_id] AS 'int'
         FROM 
             [hidden_copy] 
-        WHERE em.ID IN (SELECT ID FROM #tmp_email_id ) AND em.ID = [hidden_copy].email_id 
+		WHERE em.ID = [hidden_copy].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) c([new_hidden_copy])
