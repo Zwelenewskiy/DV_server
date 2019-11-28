@@ -1,8 +1,7 @@
-ALTER PROCEDURE [dbo].[SearchByDate]
-	@from datetime,
-	@to datetime
+CREATE PROCEDURE SearchByTags
+	@tags xml
 AS
-BEGIN
+BEGIN	
 	SELECT 
         em.[id], 
         em.[from], 
@@ -13,9 +12,9 @@ BEGIN
         b.[new_copy],
         c.[new_hidden_copy],
         d.[new_tags]
-    FROM 
-        email em
-    CROSS APPLY
+	FROM 
+		email em
+	CROSS APPLY
     (
         SELECT 
             [user_id] AS 'int'
@@ -25,7 +24,7 @@ BEGIN
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) a([new_to])
-    CROSS APPLY
+	CROSS APPLY
     (
         SELECT 
             [user_id] AS 'int'
@@ -45,25 +44,37 @@ BEGIN
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) c([new_hidden_copy])
-    CROSS APPLY
+	CROSS APPLY
     (
         SELECT 
             t.ID AS 'id', t.name AS 'name'
         FROM 
             [tag] t
         JOIN email_tag et ON em.ID = et.email_id
-        WHERE et.tag_id = t.ID
+        WHERE 
+			et.tag_id = t.ID 
  
         FOR XML PATH('Tag'), ROOT('ArrayOfTag'), TYPE
     ) d([new_tags])
-	WHERE 
-		em.id IN 
+	WHERE em.id IN
+	(
+		SELECT DISTINCT 
+			e.id
+		FROM 
+			tag t
+		JOIN email_tag em ON t.ID = em.tag_id
+		JOIN email e ON em.email_id = e.ID
+		WHERE t.ID IN 
 		(
 			SELECT 
-				[id]
+				n.id 
 			FROM 
-				email
-			WHERE 
-				email.date BETWEEN @from AND @to
+			(
+				SELECT 
+					t.n.value('(id)[1]', 'int') AS 'id'
+				FROM
+					@tags.nodes('/ArrayOfTag/Tag') t(n)
+			) n
 		)
+	)
 END;
