@@ -11,6 +11,13 @@ using System.Xml.Serialization;
 
 namespace DV_server
 {
+    [Serializable]
+    public class Tag
+    {
+        public int id;
+        public string name;
+    }
+
     public class DataBaseUtils
     {
         private enum QueryParams
@@ -28,7 +35,7 @@ namespace DV_server
             return Encoding.UTF8.GetString(ms.ToArray());
         }
 
-        private T FromXMLString<T>(string xml_string)
+        private static T FromXMLString<T>(string xml_string)
         {
             var serializer = new XmlSerializer(typeof(T));
             using (var stringReader = new StringReader(xml_string))
@@ -37,7 +44,7 @@ namespace DV_server
             }
         }
 
-        private string ConvertDateForDB(DateTime dateTime)
+        private static string ConvertDateForDB(DateTime dateTime)
         {
             return dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
         }
@@ -333,7 +340,47 @@ namespace DV_server
 
         public static List<Email> SearchByDate(DateTime from, DateTime to)
         {
-            return new List<Email>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
+                {
+                    connection.Open();
+
+                    List<Email> result = new List<Email>();
+                    using (var reader = new SqlCommand($"EXEC SearchByDate '{ConvertDateForDB(from)}', '{ConvertDateForDB(to)}'", connection).ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {       
+                            while (reader.Read())
+                            {                      
+                                Email email_tmp = new Email()
+                                {
+                                    id = Convert.ToInt32(reader["id"]),
+                                    from = Convert.ToInt32(reader["from"]),
+                                    date = Convert.ToDateTime(reader["date"]),
+                                    content = reader["content"].ToString(),
+                                    header = reader["name"].ToString()
+                                };
+
+                                email_tmp.to = reader["new_to"].ToString() == "" ?  new List<int>() : FromXMLString<List<int>>(reader["new_to"].ToString());
+                                email_tmp.copy = reader["new_copy"].ToString() == "" ?  new List<int>() : FromXMLString<List<int>>(reader["new_copy"].ToString());
+                                email_tmp.hidden_copy = reader["new_hidden_copy"].ToString() == "" ?  new List<int>() : FromXMLString<List<int>>(reader["new_hidden_copy"].ToString());
+                                email_tmp.tags = reader["new_tags"].ToString() == "" ? new List<KeyValuePair<int, string>>() : 
+                                    new List<KeyValuePair<int, string>>(FromXMLString<List<Tag>>(reader["new_tags"].ToString()).Select(tag => new KeyValuePair<int, string>(tag.id, tag.name)));
+                                
+                                result.Add(email_tmp);
+                            }
+                        }
+                    }
+
+                    connection.Close();
+                    return result;
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
