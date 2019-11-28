@@ -49,6 +49,38 @@ namespace DV_server
             return dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
+        private static List<Email> GetEmailsFromReader(SqlDataReader reader)
+        {
+            List<Email> result = new List<Email>();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Email email_tmp = new Email()
+                    {
+                        id = Convert.ToInt32(reader["id"]),
+                        from = Convert.ToInt32(reader["from"]),
+                        date = Convert.ToDateTime(reader["date"]),
+                        content = reader["content"].ToString(),
+                        header = reader["name"].ToString()
+                    };
+
+                    email_tmp.to = reader["new_to"].ToString() == "" ? new List<int>() : FromXMLString<List<int>>(reader["new_to"].ToString());
+                    email_tmp.copy = reader["new_copy"].ToString() == "" ? new List<int>() : FromXMLString<List<int>>(reader["new_copy"].ToString());
+                    email_tmp.hidden_copy = reader["new_hidden_copy"].ToString() == "" ? new List<int>() : FromXMLString<List<int>>(reader["new_hidden_copy"].ToString());
+                    email_tmp.tags = reader["new_tags"].ToString() == "" ? new List<KeyValuePair<int, string>>() :
+                        new List<KeyValuePair<int, string>>(FromXMLString<List<Tag>>(reader["new_tags"].ToString()).Select(tag => new KeyValuePair<int, string>(tag.id, tag.name)));
+
+                    result.Add(email_tmp);
+                }
+            }
+
+            reader.Close();
+
+            return result;
+        }
+
         /*private static T DoQuery<T>(string query, QueryParams query_param, T t)
         {
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
@@ -346,32 +378,7 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    List<Email> result = new List<Email>();
-                    using (var reader = new SqlCommand($"EXEC SearchByDate '{ConvertDateForDB(from)}', '{ConvertDateForDB(to)}'", connection).ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                        {       
-                            while (reader.Read())
-                            {                      
-                                Email email_tmp = new Email()
-                                {
-                                    id = Convert.ToInt32(reader["id"]),
-                                    from = Convert.ToInt32(reader["from"]),
-                                    date = Convert.ToDateTime(reader["date"]),
-                                    content = reader["content"].ToString(),
-                                    header = reader["name"].ToString()
-                                };
-
-                                email_tmp.to = reader["new_to"].ToString() == "" ?  new List<int>() : FromXMLString<List<int>>(reader["new_to"].ToString());
-                                email_tmp.copy = reader["new_copy"].ToString() == "" ?  new List<int>() : FromXMLString<List<int>>(reader["new_copy"].ToString());
-                                email_tmp.hidden_copy = reader["new_hidden_copy"].ToString() == "" ?  new List<int>() : FromXMLString<List<int>>(reader["new_hidden_copy"].ToString());
-                                email_tmp.tags = reader["new_tags"].ToString() == "" ? new List<KeyValuePair<int, string>>() : 
-                                    new List<KeyValuePair<int, string>>(FromXMLString<List<Tag>>(reader["new_tags"].ToString()).Select(tag => new KeyValuePair<int, string>(tag.id, tag.name)));
-                                
-                                result.Add(email_tmp);
-                            }
-                        }
-                    }
+                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByDate '{ConvertDateForDB(from)}', '{ConvertDateForDB(to)}'", connection).ExecuteReader());
 
                     connection.Close();
                     return result;
@@ -385,9 +392,22 @@ namespace DV_server
 
         public static List<Email> SearchByTags(List<KeyValuePair<int, string>> tags)
         {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
+                {
+                    connection.Open();
 
+                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString(tags.Select(tag => new Tag() { id = tag.Key, name = tag.Value }).ToList(), tags.GetType())}'", connection).ExecuteReader());                    
 
-            return new List<Email>();
+                    connection.Close();
+                    return result;
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
