@@ -31,7 +31,7 @@ begin
 	DROP TABLE #to_for_insert_tmp
 end;
 
-CREATE PROCEDURE SearchByDate
+CREATE PROCEDURE [dbo].[SearchByDate]
 	@from datetime,
 	@to datetime
 AS
@@ -65,23 +65,22 @@ BEGIN
 		email
 	WHERE 
 		email.date BETWEEN @from AND @to
-
-
+		
 
 
 
 	INSERT INTO #result_to([email_id], [new_to])
 	SELECT 
-		email.ID, b.[To]
+		em.ID, b.[To]
 	FROM 
-		email
+		email em
 	CROSS APPLY
 	(
 		SELECT 
 			[user_id] AS 'int'
 		FROM 
 			[to] 
-		WHERE email.ID IN (SELECT ID FROM #result_table ) AND email.ID = [to].email_id 
+		WHERE em.ID IN (SELECT ID FROM #result_table ) AND em.ID = [to].email_id 
 
 		FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
 	) b([To])
@@ -89,24 +88,24 @@ BEGIN
 	UPDATE #result_table
 	SET
 		#result_table.new_to = #result_to.new_to
-	FROM #result_table
-	JOIN #result_to ON #result_table.ID = #result_to.email_id
+	FROM #result_table rt
+	JOIN #result_to ON rt.ID = #result_to.email_id
 	
 
 
 
 	INSERT INTO #result_copy([email_id], [new_copy])
 	SELECT 
-		email.ID, b.[Copy]
+		em.ID, b.[Copy]
 	FROM 
-		email
+		email em
 	CROSS APPLY
 	(
 		SELECT 
 			[user_id] AS 'int'
 		FROM 
 			[copy] 
-		WHERE email.ID IN (SELECT ID FROM #result_table ) AND email.ID = [copy].email_id 
+		WHERE em.ID IN (SELECT ID FROM #result_table ) AND em.ID = [copy].email_id 
 
 		FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
 	) b([Copy])
@@ -114,24 +113,24 @@ BEGIN
 	UPDATE #result_table
 	SET
 		#result_table.new_copy = #result_copy.new_copy
-	FROM #result_table
-	JOIN #result_copy ON #result_table.ID = #result_copy.email_id
+	FROM #result_table rt
+	JOIN #result_copy ON rt.ID = #result_copy.email_id
 
 
 
 
 	INSERT INTO #result_hidden_copy([email_id], [new_hidden_copy])
 	SELECT 
-		email.ID, b.[Hidden_Copy]
+		em.ID, b.[Hidden_Copy]
 	FROM 
-		email
+		email em
 	CROSS APPLY
 	(
 		SELECT 
 			[user_id] AS 'int'
 		FROM 
 			[hidden_copy] 
-		WHERE email.ID IN (SELECT ID FROM #result_table ) AND email.ID = [hidden_copy].email_id 
+		WHERE em.ID IN (SELECT ID FROM #result_table ) AND em.ID = [hidden_copy].email_id 
 
 		FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
 	) b([Hidden_Copy])
@@ -139,34 +138,45 @@ BEGIN
 	UPDATE #result_table
 	SET
 		#result_table.new_hidden_copy = #result_hidden_copy.new_hidden_copy
-	FROM #result_table
-	JOIN #result_hidden_copy ON #result_table.ID = #result_hidden_copy.email_id
+	FROM #result_table rt
+	JOIN #result_hidden_copy ON rt.ID = #result_hidden_copy.email_id
 
 
 
 	INSERT INTO #result_tags([id], [new_tags])
 	SELECT 
-		email_tag.tag_id, b.tag_xml
+		em.ID, b.tag_xml
 	FROM 
-		email
-	JOIN email_tag ON email.ID = email_tag.email_id
+		email em	
 	CROSS APPLY
 	(
 		SELECT 
-			[tag].ID AS 'id', [tag].name AS 'name'
+			t.ID AS 'id', t.name AS 'name'
 		FROM 
-			[tag] 
-		WHERE email.ID IN (SELECT ID FROM #result_table ) AND email_tag.tag_id = [tag].ID
+			[tag] t
+		JOIN email_tag et ON em.ID = et.email_id
+		WHERE et.tag_id = t.ID
 
 		FOR XML PATH('Tag'), ROOT('ArrayOfTag'), TYPE
 	) b([tag_xml])
+	WHERE em.ID IN (SELECT ID FROM #result_table) 
 
 	UPDATE #result_table
 	SET
 		#result_table.new_tags = #result_tags.new_tags
-	FROM #result_table
-	JOIN #result_tags ON #result_table.ID = #result_tags.id
+	FROM #result_table rt
+	JOIN #result_tags ON rt.ID = #result_tags.id
 
-
-	SELECT * FROM #result_table
+	SELECT
+		[id], 
+		[from], 
+		[date], 
+		[content], 
+		[name],
+		[new_to],
+		[new_copy],
+		[new_hidden_copy],
+		[new_tags]
+	FROM 
+		#result_table
 END;
