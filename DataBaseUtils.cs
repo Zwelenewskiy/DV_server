@@ -398,7 +398,7 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString(tags.Select(tag => tag.Key).ToList(), List<int>)}'", connection).ExecuteReader());                    
+                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString(tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteReader());                    
 
                     connection.Close();
                     return result;
