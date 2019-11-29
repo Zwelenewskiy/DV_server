@@ -409,5 +409,25 @@ namespace DV_server
                 return null;
             }
         }
+
+        public static bool ChangeUser(User user)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
+                {
+                    connection.Open();
+
+                    new SqlCommand($"EXEC ChangeUser {user.id}, '{user.name}', '{user.patronymic}', '{user.lastname}', '{user.email}', ", connection).BeginExecuteNonQuery();
+
+                    connection.Close();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

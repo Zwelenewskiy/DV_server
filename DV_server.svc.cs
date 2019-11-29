@@ -53,5 +53,10 @@ namespace DV_server
         {
             return DataBaseUtils.SearchByTags(tags);
         }
+
+        public bool ChangeUser(User user)
+        {
+            return DataBaseUtils.ChangeUser(user);
+        }
     }
 }

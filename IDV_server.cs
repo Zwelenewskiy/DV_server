@@ -33,5 +33,8 @@ namespace DV_server
 
         [OperationContract]
         List<Email> SearchByTags(List<KeyValuePair<int, string>> tags);
+
+        [OperationContract]
+        bool ChangeUser(User user);
     }
 }
