@@ -1,4 +1,4 @@
-ALTER PROCEDURE [dbo].[SearchByDate]
+CREATE PROCEDURE [dbo].[SearchByDate]
 	@from datetime,
 	@to datetime
 AS
@@ -57,13 +57,5 @@ BEGIN
         FOR XML PATH('Tag'), ROOT('ArrayOfTag'), TYPE
     ) d([new_tags])
 	WHERE 
-		em.id IN 
-		(
-			SELECT 
-				[id]
-			FROM 
-				email
-			WHERE 
-				email.date BETWEEN @from AND @to
-		)
+		em.date BETWEEN @from AND @to
 END;
