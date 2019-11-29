@@ -36,5 +36,8 @@ namespace DV_server
 
         [OperationContract]
         bool ChangeUser(User user);
+
+        [OperationContract]
+        bool AddUsers(List<User> users);
     }
 }

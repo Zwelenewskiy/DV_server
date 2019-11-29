@@ -58,5 +58,10 @@ namespace DV_server
         {
             return DataBaseUtils.ChangeUser(user);
         }
+
+        public bool AddUsers(List<User> users)
+        {
+            return DataBaseUtils.AddUsers(users);
+        }
     }
 }

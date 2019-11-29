@@ -429,5 +429,25 @@ namespace DV_server
                 return false;
             }
         }
+
+        public static bool AddUsers(List<User> users)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
+                {
+                    connection.Open();
+
+                    new SqlCommand($"EXEC AddUser '{ToXMLString(users, users.GetType())}', ", connection).BeginExecuteNonQuery();
+
+                    connection.Close();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
