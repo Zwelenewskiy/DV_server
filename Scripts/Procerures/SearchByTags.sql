@@ -2,7 +2,7 @@ CREATE PROCEDURE SearchByTags
 	@tags xml
 AS
 BEGIN	
-	With CTE1(TagId) AS
+	With TagIds(TagId) AS
 	(
 		SELECT 
 			t.n.value('.', 'int') AS 'id'
@@ -15,7 +15,7 @@ BEGIN
 			em.email_id
 		FROM 
 			email_tag em
-		JOIN CTE1 tHelp ON em.tag_id = tHelp.TagId
+		JOIN TagIds tTids ON em.tag_id = tTids.TagId
 	)
 
 	SELECT
@@ -30,6 +30,7 @@ BEGIN
         d.[new_tags]
 	FROM 
 		email e
+	JOIN EmailIds tIds ON tIds.MailId = e.id
 	CROSS APPLY
     (
         SELECT 
@@ -72,20 +73,4 @@ BEGIN
 		
         FOR XML PATH('Tag'), ROOT('ArrayOfTag'), TYPE
     ) d([new_tags])	
-	JOIN email_tag em ON e.id = em.email_id
-	JOIN tag t ON em.tag_id = t.id
-	WHERE e.id IN (SELECT MailId FROM EmailIds) 
-	AND 
-	t.id IN
-	(
-		SELECT 
-				n.id 
-		FROM 
-		(
-			SELECT 
-				t.n.value('.', 'int') AS 'id'
-			FROM
-				@tags.nodes('/ArrayOfInt/int') t(n)
-		) n
-	)
 END;
