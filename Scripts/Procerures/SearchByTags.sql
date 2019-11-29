@@ -2,25 +2,41 @@ CREATE PROCEDURE SearchByTags
 	@tags xml
 AS
 BEGIN	
-	SELECT 
-        em.[id], 
-        em.[from], 
-        em.[date], 
-        em.[content], 
-        em.[name],
+	With CTE1(TagId) AS
+	(
+		SELECT 
+			t.n.value('.', 'int') AS 'id'
+		FROM
+			@tags.nodes('/ArrayOfInt/int') t(n)
+	),
+	EmailIds(MailId) AS
+	(
+		SELECT DISTINCT 
+			em.email_id
+		FROM 
+			email_tag em
+		JOIN CTE1 tHelp ON em.tag_id = tHelp.TagId
+	)
+
+	SELECT
+        e.[id], 
+        e.[from], 
+        e.[date], 
+        e.[content], 
+        e.[name],
         a.new_to,
         b.[new_copy],
         c.[new_hidden_copy],
         d.[new_tags]
 	FROM 
-		email em
+		email e
 	CROSS APPLY
     (
         SELECT 
             [user_id] AS 'int'
         FROM 
             [to] 
-		WHERE em.ID = [to].email_id 
+		WHERE e.ID = [to].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) a([new_to])
@@ -30,7 +46,7 @@ BEGIN
             [user_id] AS 'int'
         FROM 
             [copy] 
-		WHERE em.ID = [copy].email_id 
+		WHERE e.ID = [copy].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) b([new_copy])
@@ -40,7 +56,7 @@ BEGIN
             [user_id] AS 'int'
         FROM 
             [hidden_copy] 
-		WHERE em.ID = [hidden_copy].email_id 
+		WHERE e.ID = [hidden_copy].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
     ) c([new_hidden_copy])
@@ -50,31 +66,26 @@ BEGIN
             t.ID AS 'id', t.name AS 'name'
         FROM 
             [tag] t
-        JOIN email_tag et ON em.ID = et.email_id
+        JOIN email_tag et ON e.ID = et.email_id
         WHERE 
 			et.tag_id = t.ID 
- 
+		
         FOR XML PATH('Tag'), ROOT('ArrayOfTag'), TYPE
-    ) d([new_tags])
-	WHERE em.id IN
+    ) d([new_tags])	
+	JOIN email_tag em ON e.id = em.email_id
+	JOIN tag t ON em.tag_id = t.id
+	WHERE e.id IN (SELECT MailId FROM EmailIds) 
+	AND 
+	t.id IN
 	(
-		SELECT DISTINCT 
-			e.id
+		SELECT 
+				n.id 
 		FROM 
-			tag t
-		JOIN email_tag em ON t.ID = em.tag_id
-		JOIN email e ON em.email_id = e.ID
-		WHERE t.ID IN 
 		(
 			SELECT 
-				n.id 
-			FROM 
-			(
-				SELECT 
-					t.n.value('(id)[1]', 'int') AS 'id'
-				FROM
-					@tags.nodes('/ArrayOfTag/Tag') t(n)
-			) n
-		)
+				t.n.value('.', 'int') AS 'id'
+			FROM
+				@tags.nodes('/ArrayOfInt/int') t(n)
+		) n
 	)
 END;
