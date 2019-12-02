@@ -24,10 +24,10 @@ BEGIN
         e.[date], 
         e.[content], 
         e.[name],
-        a.new_to,
-        b.[new_copy],
-        c.[new_hidden_copy],
-        d.[new_tags]
+        a.[to],
+        b.[copy],
+        c.[hidden_copy],
+        d.[tags]
 	FROM 
 		email e
 	JOIN EmailIds tIds ON tIds.MailId = e.id
@@ -40,7 +40,7 @@ BEGIN
 		WHERE e.ID = [to].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
-    ) a([new_to])
+    ) a([to])
 	CROSS APPLY
     (
         SELECT 
@@ -50,7 +50,7 @@ BEGIN
 		WHERE e.ID = [copy].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
-    ) b([new_copy])
+    ) b([copy])
     CROSS APPLY
     (
         SELECT 
@@ -60,7 +60,7 @@ BEGIN
 		WHERE e.ID = [hidden_copy].email_id 
  
         FOR XML PATH(''), ROOT('ArrayOfInt'), TYPE
-    ) c([new_hidden_copy])
+    ) c([hidden_copy])
 	CROSS APPLY
     (
         SELECT 
@@ -72,5 +72,5 @@ BEGIN
 			et.tag_id = t.ID 
 		
         FOR XML PATH('Tag'), ROOT('ArrayOfTag'), TYPE
-    ) d([new_tags])	
+    ) d([tags])	
 END;
