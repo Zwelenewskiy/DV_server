@@ -26,9 +26,9 @@ namespace DV_server
             nonQuery
         }
 
-        private static string ToXMLString(object obj, Type objType)
+        private static string ToXMLString<T>(object obj)
         {
-            XmlSerializer xs = new XmlSerializer(objType);
+            XmlSerializer xs = new XmlSerializer(typeof(T));
             MemoryStream ms = new MemoryStream();
             xs.Serialize(ms, obj);
 
@@ -184,9 +184,9 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    new SqlCommand($"EXEC SaveEmail {email.from}, '{ConvertDateForDB(email.date)}', '{email.content}', '{email.header}', '{ToXMLString(email.to, typeof(List<int>))}'," +
-                        $" '{ToXMLString(email.copy, typeof(List<int>))}', '{ToXMLString(email.hidden_copy, typeof(List<int>))}'," +
-                        $" '{ToXMLString(email.tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteNonQuery();
+                    new SqlCommand($"EXEC SaveEmail {email.from}, '{ConvertDateForDB(email.date)}', '{email.content}', '{email.header}', '{ToXMLString<List<int>>(email.to)}'," +
+                        $" '{ToXMLString<List<int>>(email.copy)}', '{ToXMLString<List<int>>(email.hidden_copy)}'," +
+                        $" '{ToXMLString<List<int>>(email.tags.Select(tag => tag.Key).ToList())}'", connection).ExecuteNonQuery();
 
                     connection.Close();
                 }
@@ -233,10 +233,10 @@ namespace DV_server
                     connection.Open();
 
                     new SqlCommand($"EXEC UpdateEmail {email.id}, {email.from}, '{ConvertDateForDB(email.date)}',  '{email.content}',  '{email.header}',  " +
-                        $"'{ToXMLString(email.to, typeof(List<int>))}', " +
-                        $"'{ToXMLString(email.copy, typeof(List<int>))}', " +
-                        $"'{ToXMLString(email.hidden_copy, typeof(List<int>))}', " +
-                        $"'{ToXMLString(email.tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteNonQuery();
+                        $"'{ToXMLString<List<int>>(email.to)}', " +
+                        $"'{ToXMLString<List<int>>(email.copy)}', " +
+                        $"'{ToXMLString<List<int>>(email.hidden_copy)}', " +
+                        $"'{ToXMLString<List<int>>(email.tags.Select(tag => tag.Key).ToList())}'", connection).ExecuteNonQuery();
 
                     connection.Close();
                     return true;
@@ -273,7 +273,7 @@ namespace DV_server
                 using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
-                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString(tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteReader());    
+                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString<List<int>>(tags.Select(tag => tag.Key).ToList())}'", connection).ExecuteReader());    
                     connection.Close();
 
                     return result;
@@ -311,7 +311,7 @@ namespace DV_server
                 using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
-                    new SqlCommand($"EXEC AddUser '{ToXMLString(users, users.GetType())}', ", connection).BeginExecuteNonQuery();
+                    new SqlCommand($"EXEC AddUser '{ToXMLString<List<int>>(users)}', ", connection).BeginExecuteNonQuery();
                     connection.Close();
 
                     return true;
