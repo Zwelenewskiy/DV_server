@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -15,7 +16,7 @@ namespace DV_server
 
         static Server()
         {
-            GlobalSettings.connection_string = DataBaseUtils.ReadConnectSettings(PATH);            
+            GlobalSettings.connection_string = DataBaseUtils.ReadConnectSettings(PATH);  
         }
 
         public List<Email> GetEmails()
