@@ -184,28 +184,9 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    int ID = Convert.ToInt32(new SqlCommand($"EXEC Add_in_email {email.from}, " +
-                        $"'{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}', '{email.content}', '{email.header}'", connection).ExecuteScalar());
-
-                    foreach (int user_id in email.to)
-                    {
-                        new SqlCommand($"EXEC Add_in_to {ID}, {user_id}", connection).ExecuteNonQuery();
-                    }
-
-                    foreach (int user_id in email.copy)
-                    {
-                        new SqlCommand($"EXEC Add_in_copy {ID}, {user_id}", connection).ExecuteNonQuery();
-                    }
-
-                    foreach (int user_id in email.hidden_copy)
-                    {
-                        new SqlCommand($"EXEC Add_in_hidden_copy {ID}, {user_id}", connection).ExecuteNonQuery();
-                    }
-
-                    foreach (var tag_name in email.tags)
-                    {
-                        new SqlCommand($"EXEC SaveEmailTag {tag_name.Key}, '{ID}'", connection).ExecuteNonQuery();
-                    }
+                    new SqlCommand($"EXEC SaveEmail {email.from}, '{ConvertDateForDB(email.date)}', '{email.content}', '{email.header}', '{ToXMLString(email.to, typeof(List<int>))}'," +
+                        $" '{ToXMLString(email.copy, typeof(List<int>))}', '{ToXMLString(email.hidden_copy, typeof(List<int>))}'," +
+                        $" '{ToXMLString(email.tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteNonQuery();
 
                     connection.Close();
                 }
