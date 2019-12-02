@@ -81,7 +81,7 @@ namespace DV_server
             return result;
         }
 
-        private static T DoQuery<T>(string query, QueryParams query_param)
+        /*private static T DoQuery<T>(string query, QueryParams query_param)
         {
             object result = new object();
 
@@ -102,7 +102,7 @@ namespace DV_server
             }
 
             return (T)result;
-        }
+        }*/
 
         public static string ReadConnectSettings(string path)
         {

@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataBaseUtils.cs" />
+    <Compile Include="DataBaseWork.cs" />
     <Compile Include="DV_server.svc.cs">
       <DependentUpon>DV_server.svc</DependentUpon>
     </Compile>
