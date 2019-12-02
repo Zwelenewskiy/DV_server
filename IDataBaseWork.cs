@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DV_server
 {
-    interface DataBaseWork
+    interface IDataBaseWork
     {
         object doQuery(string query);
     }
