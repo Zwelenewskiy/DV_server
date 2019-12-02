@@ -111,6 +111,8 @@ namespace DV_server
            switch(INIfileUtils.ReadKey(path, "type", "db_type"))
             {
                 case "mssql":
+                    GlobalSettings.db_type = GlobalSettings.DbType.MsSql;
+
                     if (INIfileUtils.ReadKey(path, "data", "need_auth") == "1")
                     {
                         result = $"Data Source={INIfileUtils.ReadKey(path, "data", "server")};Initial Catalog={INIfileUtils.ReadKey(path, "data", "database")};" + 

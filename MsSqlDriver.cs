@@ -9,7 +9,7 @@ namespace DV_server
     {
         public void IDataBaseWork()
         {
-
+            
         }
 
         public object doQuery(string query)
