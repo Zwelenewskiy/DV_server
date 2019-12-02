@@ -232,7 +232,7 @@ namespace DV_server
                 {
                     connection.Open();
 
-                    new SqlCommand($"EXEC UpdateEmail {email.id}, {email.from}, '{email.date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}',  '{email.content}',  '{email.header}',  " +
+                    new SqlCommand($"EXEC UpdateEmail {email.id}, {email.from}, '{ConvertDateForDB(email.date)}',  '{email.content}',  '{email.header}',  " +
                         $"'{ToXMLString(email.to, typeof(List<int>))}', " +
                         $"'{ToXMLString(email.copy, typeof(List<int>))}', " +
                         $"'{ToXMLString(email.hidden_copy, typeof(List<int>))}', " +
@@ -255,9 +255,7 @@ namespace DV_server
                 using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
-
                     List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByDate '{ConvertDateForDB(from)}', '{ConvertDateForDB(to)}'", connection).ExecuteReader());
-
                     connection.Close();
                     return result;
                 }
@@ -275,10 +273,9 @@ namespace DV_server
                 using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
-
-                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString(tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteReader());                    
-
+                    List<Email> result = GetEmailsFromReader(new SqlCommand($"EXEC SearchByTags '{ToXMLString(tags.Select(tag => tag.Key).ToList(), typeof(List<int>))}'", connection).ExecuteReader());    
                     connection.Close();
+
                     return result;
                 }
             }
@@ -295,10 +292,9 @@ namespace DV_server
                 using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
-
                     new SqlCommand($"EXEC ChangeUser {user.id}, '{user.name}', '{user.patronymic}', '{user.lastname}', '{user.email}', ", connection).BeginExecuteNonQuery();
-
                     connection.Close();
+
                     return true;
                 }
             }
@@ -315,10 +311,9 @@ namespace DV_server
                 using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
                 {
                     connection.Open();
-
                     new SqlCommand($"EXEC AddUser '{ToXMLString(users, users.GetType())}', ", connection).BeginExecuteNonQuery();
-
                     connection.Close();
+
                     return true;
                 }
             }
