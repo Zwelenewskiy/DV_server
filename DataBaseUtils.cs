@@ -115,16 +115,23 @@ namespace DV_server
 
         public static string ReadConnectSettings(string path)
         {
-            //string result = @"Data Source=.\<source>;Initial Catalog=<catalog>;Integrated Security=True";
-            string result = @"Data Source=<source>;Initial Catalog=<catalog>;Password=<password>;User ID=<login>";
+            string result = null;
 
-            result = result.Replace("<source>", INIfileUtils.ReadKey(path, "mssql", "server"));
-            result = result.Replace("<catalog>", INIfileUtils.ReadKey(path, "mssql", "database"));
-
-           if(INIfileUtils.ReadKey(path, "mssql", "need_auth") == "1")
-           {
-                result = result.Replace("<password>", INIfileUtils.ReadKey(path, "mssql", "password"));
-                result = result.Replace("<login>", INIfileUtils.ReadKey(path, "mssql", "login"));
+           switch(INIfileUtils.ReadKey(path, "type", "db_type"))
+            {
+                case "mssql":
+                    if (INIfileUtils.ReadKey(path, "data", "need_auth") == "1")
+                    {
+                        result = $"Data Source={INIfileUtils.ReadKey(path, "data", "server")};Initial Catalog={INIfileUtils.ReadKey(path, "data", "database")};" + 
+                            $"Password={INIfileUtils.ReadKey(path, "data", "password")};User ID={INIfileUtils.ReadKey(path, "data", "login")}";
+                    }
+                    else
+                    {
+                        result = $@"Data Source=.\<{INIfileUtils.ReadKey(path, "data", "server")}>;Initial Catalog=<{INIfileUtils.ReadKey(path, "data", "database")}>;Integrated Security=True";
+                    }
+                    break;
+                case "postgresql":
+                    break;
             }
 
             return result;
