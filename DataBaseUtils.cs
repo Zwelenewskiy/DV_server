@@ -22,8 +22,8 @@ namespace DV_server
     {
         private enum QueryParams
         {
-            withReader,
-            nonQuery
+            getEmails,
+            saveEmail
         }
 
         private static string ToXMLString<T>(object obj)
@@ -81,37 +81,28 @@ namespace DV_server
             return result;
         }
 
-        /*private static T DoQuery<T>(string query, QueryParams query_param, T t)
+        private static T DoQuery<T>(string query, QueryParams query_param)
         {
+            object result = new object();
+
             using (SqlConnection connection = new SqlConnection(GlobalSettings.connection_string))
             {
                 connection.Open();
 
                 switch (query_param)
                 {
-                    case QueryParams.withReader:
-                        using (SqlDataReader reader = new SqlCommand(query, connection).ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                while (reader.Read())
-                                {
-
-                                }
-                            }
-                        }
-
+                    case QueryParams.getEmails:
                         break;
 
-                    case QueryParams.nonQuery:
-                        return new SqlCommand(query, connection).ExecuteNonQuery();
+                    case QueryParams.saveEmail:
+                        break;
                 }             
 
                 connection.Close();
             }
 
-            return t;
-        }*/
+            return (T)result;
+        }
 
         public static string ReadConnectSettings(string path)
         {
