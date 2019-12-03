@@ -31,28 +31,33 @@ namespace DV_server
             getEmails
         }        
 
-        public static T DataBaseQueryManager<T>(QueryType query_type)
+        private static object ExecuteQuery(string query_string)
         {
-            object result = new object();
-            string query_string = null;
             MsSqlDriver ms_sql_driver = new MsSqlDriver();
-
-            switch (query_type)
-            {
-                case QueryType.getEmails:
-                    query_string = "EXEC GetAllEmails";
-                    break;
-            }
+            object query_result = null;
 
             switch (GlobalSettings.db_type)
             {
                 case GlobalSettings.DbType.MsSql:
-                    var tmp = ms_sql_driver.ExecuteReader(query_string);
+                    return ms_sql_driver.ExecuteReader(query_string);
+            }
+
+            return query_result;
+        }
+
+        public static T DataBaseQueryManager<T>(QueryType query_type)
+        {
+            object result = new object();
+
+            switch (query_type)
+            {
+                case QueryType.getEmails:
+                    var tmp = ExecuteQuery("EXEC GetAllEmails");
 
                     //Преобразуем tmp в result
 
                     break;
-            }           
+            }                    
 
             return (T)result;
         }
