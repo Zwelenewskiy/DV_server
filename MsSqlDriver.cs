@@ -7,12 +7,17 @@ namespace DV_server
 {
     public class MsSqlDriver : IDataBaseWork
     {
-        public void IDataBaseWork()
+        public object ExecuteReader(string query)
         {
-            
+            return null;
         }
 
-        public object doQuery(string query)
+        public object ExecuteNonQuery(string query)
+        {
+            return null;
+        }
+
+        public object ExecuteScalar(string query)
         {
             return null;
         }

@@ -64,5 +64,10 @@ namespace DV_server
         {
             return DataBaseUtils.AddUsers(users);
         }
+
+        public List<Email> SomeMethod()
+        {
+            return DataBaseUtils.DataBaseQueryManager<List<Email>>(DataBaseUtils.QueryType.getEmails);
+        }
     }
 }

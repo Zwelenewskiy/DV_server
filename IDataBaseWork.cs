@@ -8,6 +8,8 @@ namespace DV_server
 {
     interface IDataBaseWork
     {
-        object doQuery(string query);
+        object ExecuteReader(string query);
+        object ExecuteNonQuery(string query);
+        object ExecuteScalar(string query);
     }
 }
