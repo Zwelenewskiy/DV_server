@@ -5,7 +5,7 @@ using System.Web;
 
 namespace DV_server
 {
-    public static class GlobalSettings
+    public class GlobalSettings
     {
         /// <summary>
         /// Определяет тип используемой СУБД

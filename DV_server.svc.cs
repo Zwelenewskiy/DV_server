@@ -16,7 +16,18 @@ namespace DV_server
 
         static Server()
         {
-            GlobalSettings.connection_string = DataBaseUtils.ReadConnectSettings(PATH);  
+            GlobalSettings.connection_string = DataBaseUtils.ReadConnectSettings(PATH);
+            IDataBaseWork data_base_worker;
+
+            switch (GlobalSettings.db_type)
+            {
+                case GlobalSettings.DbType.MsSql:
+                    data_base_worker = new MsSQLDriver(GlobalSettings.connection_string);
+                    break;
+
+                case GlobalSettings.DbType.PostgreSql:
+                    break;
+            }
         }
 
         public List<Email> GetEmails()
@@ -63,11 +74,6 @@ namespace DV_server
         public bool AddUsers(List<User> users)
         {
             return DataBaseUtils.AddUsers(users);
-        }
-
-        public List<Email> SomeMethod()
-        {
-            return DataBaseUtils.DataBaseQueryManager<List<Email>>(DataBaseUtils.QueryType.getEmails);
         }
     }
 }

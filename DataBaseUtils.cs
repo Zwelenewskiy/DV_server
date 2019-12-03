@@ -31,37 +31,6 @@ namespace DV_server
             getEmails
         }        
 
-        private static object ExecuteQuery(string query_string)
-        {
-            MsSqlDriver ms_sql_driver = new MsSqlDriver();
-            object query_result = null;
-
-            switch (GlobalSettings.db_type)
-            {
-                case GlobalSettings.DbType.MsSql:
-                    return ms_sql_driver.ExecuteReader(query_string);
-            }
-
-            return query_result;
-        }
-
-        public static T DataBaseQueryManager<T>(QueryType query_type)
-        {
-            object result = new object();
-
-            switch (query_type)
-            {
-                case QueryType.getEmails:
-                    var tmp = ExecuteQuery("EXEC GetAllEmails");
-
-                    //Преобразуем tmp в result
-
-                    break;
-            }                    
-
-            return (T)result;
-        }
-
         private static string ToXMLString<T>(object obj)
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));

@@ -39,8 +39,5 @@ namespace DV_server
 
         [OperationContract]
         bool AddUsers(List<User> users);
-
-        [OperationContract]
-        List<Email> SomeMethod();
     }
 }
