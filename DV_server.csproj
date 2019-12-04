@@ -46,6 +46,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Models\bin\Debug\Models.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>.\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=4.0.2.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Npgsql.dll</HintPath>
+    </Reference>
     <Reference Include="SharpConfig, Version=3.2.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\SharpConfig.dll</HintPath>
@@ -82,6 +89,7 @@
     <Compile Include="INIfileUtils.cs" />
     <Compile Include="DataBaseDriver.cs" />
     <Compile Include="MsSqlDriver.cs" />
+    <Compile Include="PostgreSqlDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
