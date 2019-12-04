@@ -17,7 +17,7 @@ namespace DV_server
         List<Email> GetEmails();
 
         [OperationContract]
-        bool saveEmail(Email email);
+        bool SaveEmail(Email email);
 
         [OperationContract]
         List<User> GetUsers();
@@ -26,7 +26,7 @@ namespace DV_server
         List<KeyValuePair<int, string>> GetTags();
 
         [OperationContract]
-        bool ChangeEmail(Email email);
+        bool UpdateEmail(Email email);
 
         [OperationContract]
         List<Email> SearchByDate(DateTime from, DateTime to);

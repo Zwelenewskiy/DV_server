@@ -12,12 +12,12 @@ namespace DV_server
         //string ConvertDateForDB(DateTime dateTime);
         List<Email> GetRecords();
         List<User> GetUsers();
-        bool SaveEmail();
+        bool SaveEmail(Email email);
         List<KeyValuePair<int, string>> GetTags();
         bool UpdateEmail(Email email);
         List<Email> SearchByDate(DateTime from, DateTime to);
         List<Email> SearchByTags(List<KeyValuePair<int, string>> tags);
-        bool ChangeUser();
+        bool ChangeUser(User user);
         bool AddUsers(List<User> users);
     }
 }
