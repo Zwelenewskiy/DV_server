@@ -11,15 +11,14 @@ namespace DV_server
 
         static Server()
         {
-            GlobalHelper.connection_string = GlobalHelper.ReadConnectSettings(PATH);            
-
-            switch (GlobalHelper.db_type)
+            switch (GlobalHelper.ReadConnectSettings(PATH))
             {
-                case GlobalHelper.DbType.MsSql:
+                case "mssql":
                     data_base_worker = new MsSqlDriver(GlobalHelper.connection_string);
                     break;
 
-                case GlobalHelper.DbType.PostgreSql:
+                case "postgresql":
+                    data_base_worker = new PostgreSqlDriver(GlobalHelper.connection_string);
                     break;
             }
         }

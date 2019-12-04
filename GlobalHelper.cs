@@ -5,19 +5,10 @@ using System.Xml.Serialization;
 namespace DV_server
 {
     public static class GlobalHelper
-    {
-        /// <summary>
-        /// Определяет тип используемой СУБД
-        /// </summary>
-        public enum DbType
-        {
-            MsSql,
-            PostgreSql
-        }
+    {       
 
         public static string connection_string;
-        public static DbType db_type;
-
+        
         /// <summary>
         /// Сериализует объект в XML-представление
         /// </summary>
@@ -57,19 +48,22 @@ namespace DV_server
             switch (INIfileUtils.ReadKey(path, "type", "db_type"))
             {
                 case "mssql":
-                    GlobalHelper.db_type = GlobalHelper.DbType.MsSql;
-
                     if (INIfileUtils.ReadKey(path, "data", "need_auth") == "1")
                     {
-                        result = $"Data Source={INIfileUtils.ReadKey(path, "data", "server")};Initial Catalog={INIfileUtils.ReadKey(path, "data", "database")};" +
+                        connection_string = $"Data Source={INIfileUtils.ReadKey(path, "data", "server")};Initial Catalog={INIfileUtils.ReadKey(path, "data", "database")};" +
                             $"Password={INIfileUtils.ReadKey(path, "data", "password")};User ID={INIfileUtils.ReadKey(path, "data", "login")}";
+
+                        result = "mssql";
                     }
                     else
                     {
-                        result = $@"Data Source=.\<{INIfileUtils.ReadKey(path, "data", "server")}>;Initial Catalog=<{INIfileUtils.ReadKey(path, "data", "database")}>;Integrated Security=True";
+                        connection_string = $@"Data Source=.\<{INIfileUtils.ReadKey(path, "data", "server")}>;Initial Catalog=<{INIfileUtils.ReadKey(path, "data", "database")}>;Integrated Security=True";
                     }
                     break;
                 case "postgresql":
+
+                        connection_string = "";
+                        result = "postgresql";
                     break;
             }
 
